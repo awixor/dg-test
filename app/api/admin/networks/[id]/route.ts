@@ -30,7 +30,7 @@ export async function PUT(
       data: { name, slug, iconUrl },
     });
 
-    revalidateTag("tokens", "max");
+    revalidateTag("tokens", { expire: 0 });
     return Response.json({ data: network });
   } catch {
     return Response.json(
@@ -47,7 +47,7 @@ export async function DELETE(
   try {
     const { id } = await ctx.params;
     await db.network.delete({ where: { id: Number(id) } });
-    revalidateTag("tokens", "max");
+    revalidateTag("tokens", { expire: 0 });
     return new Response(null, { status: 204 });
   } catch {
     return Response.json(

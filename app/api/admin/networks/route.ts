@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     }
 
     const network = await db.network.create({ data: { name, slug, iconUrl } });
-    revalidateTag("tokens", "max");
+    revalidateTag("tokens", { expire: 0 });
     return Response.json({ data: network }, { status: 201 });
   } catch {
     return Response.json({ error: "Failed to create network" }, { status: 500 });

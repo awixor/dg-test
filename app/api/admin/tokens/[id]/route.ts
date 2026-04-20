@@ -47,7 +47,7 @@ export async function PUT(
       },
     });
 
-    revalidateTag("tokens", "max");
+    revalidateTag("tokens", { expire: 0 });
     return Response.json({ data: token });
   } catch {
     return Response.json({ error: "Failed to update token" }, { status: 500 });
@@ -61,7 +61,7 @@ export async function DELETE(
   try {
     const { id } = await ctx.params;
     await db.token.delete({ where: { id: Number(id) } });
-    revalidateTag("tokens", "max");
+    revalidateTag("tokens", { expire: 0 });
     return new Response(null, { status: 204 });
   } catch {
     return Response.json({ error: "Failed to delete token" }, { status: 500 });

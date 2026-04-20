@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       data: { symbol, name, iconUrl, isEnabled, isUnderMaintenance, displayOrder },
     });
 
-    revalidateTag("tokens", "max");
+    revalidateTag("tokens", { expire: 0 });
     return Response.json({ data: token }, { status: 201 });
   } catch {
     return Response.json({ error: "Failed to create token" }, { status: 500 });
