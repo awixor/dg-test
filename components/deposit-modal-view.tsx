@@ -80,7 +80,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
       >
         <div className="flex flex-col gap-4 px-3 pt-3 pb-6">
           <div className="flex justify-end">
-            <button className="text-white hover:opacity-70 transition-opacity">
+            <button className="text-white hover:opacity-70 transition-opacity cursor-pointer">
               <CloseIcon />
             </button>
           </div>
@@ -90,7 +90,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex-1 rounded-[3px] text-sm font-bold transition-colors duration-150 ${
+                className={`flex-1 rounded-[3px] text-sm font-bold cursor-pointer transition-colors duration-150 ${
                   activeTab === tab.key
                     ? "bg-modal-bg text-white"
                     : "text-modal-muted hover:text-white"
@@ -107,7 +107,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
             </p>
             <div className="relative">
               <button
-                className="w-full flex items-center gap-2 bg-modal-bg rounded-md px-2 py-2 hover:bg-modal-hover transition-colors"
+                className="w-full flex items-center gap-2 bg-modal-bg rounded-md px-2 py-2 hover:bg-modal-hover transition-colors cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleDropdown(DropdownType.Token);
@@ -127,7 +127,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
                   {tokens.map((token) => (
                     <button
                       key={token.id}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-modal-icon-bg transition-colors ${token.id === selectedTokenId ? "bg-modal-icon-bg" : ""}`}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-modal-icon-bg cursor-pointer transition-colors ${token.id === selectedTokenId ? "bg-modal-icon-bg" : ""}`}
                       onClick={() => selectToken(token.id)}
                     >
                       <TokenIcon
@@ -153,7 +153,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
             </p>
             <div className="relative">
               <button
-                className="w-full flex items-center gap-2 bg-modal-bg rounded-md px-2 py-2 hover:bg-modal-hover transition-colors"
+                className="w-full flex items-center gap-2 bg-modal-bg cursor-pointer rounded-md px-2 py-2 hover:bg-modal-hover transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleDropdown(DropdownType.Network);
@@ -170,7 +170,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
                   {selectedToken.networks.map((entry, idx) => (
                     <button
                       key={entry.network.id}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-modal-icon-bg transition-colors ${idx === selectedNetworkIdx ? "bg-modal-icon-bg" : ""}`}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 cursor-pointer text-left hover:bg-modal-icon-bg transition-colors ${idx === selectedNetworkIdx ? "bg-modal-icon-bg" : ""}`}
                       onClick={() => selectNetwork(idx)}
                     >
                       <div className="w-6 h-6 rounded-full bg-modal-icon-bg shrink-0" />
@@ -215,7 +215,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
             <button
               onClick={handleCopy}
               disabled={!depositAddress}
-              className="w-full py-2 rounded-[9px] font-bold text-sm text-accent-text bg-accent-purple border border-accent-border transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed capitalize"
+              className="w-full py-2 rounded-[9px] font-bold text-sm cursor-pointer text-accent-text bg-accent-purple border border-accent-border transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed capitalize"
             >
               {copied ? "Copied!" : `Copy ${selectedToken?.symbol} Address`}
             </button>
@@ -237,7 +237,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
               will NOT be credited to your balance.
             </p>
 
-            <button className="text-brand-link hover:opacity-80 text-sm font-bold transition-colors capitalize">
+            <button className="text-brand-link hover:opacity-80 cursor-pointer text-sm font-bold transition-colors capitalize">
               Transaction History
             </button>
           </div>
@@ -245,7 +245,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
           <p className="text-center text-white text-sm">or</p>
 
           <div className="bg-modal-dark rounded-[9px] p-3 flex flex-col gap-3">
-            <button className="w-full py-2 rounded-[9px] font-bold text-sm text-white bg-modal-bg hover:bg-modal-hover transition-colors capitalize">
+            <button className="w-full py-2 rounded-[9px] font-bold cursor-pointer text-sm text-white bg-modal-bg hover:bg-modal-hover transition-colors capitalize">
               Buy Crypto
             </button>
 

@@ -19,7 +19,7 @@ export function TokenIcon({
     );
   }
   return (
-    <div className="w-6 h-6 rounded-full bg-[#2a2a2a] flex items-center justify-center text-xs font-bold text-[#cfcfcf] shrink-0">
+    <div className="w-6 h-6 rounded-full bg-modal-icon-bg flex items-center justify-center text-xs font-bold text-modal-muted shrink-0">
       {symbol[0]}
     </div>
   );
