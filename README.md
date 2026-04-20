@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# dg-test
 
-## Getting Started
+Crypto deposit modal — Next.js 16, Prisma 7, PostgreSQL, Tailwind 4.
 
-First, run the development server:
+---
+
+## Prerequisites
+
+| Tool | Version |
+|------|---------|
+| Node.js | 20+ |
+| pnpm | 9+ |
+| PostgreSQL | 14+ |
+
+---
+
+## Local Setup
+
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `.env` and set `DATABASE_URL` to point at your local PostgreSQL instance:
 
-## Learn More
+```
+DATABASE_URL="postgresql://username:password@localhost:5432/dg_test?schema=public"
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Run migrations + seed
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm db:migrate   # applies all Prisma migrations
+pnpm db:seed      # seeds tokens and networks
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. Start the dev server
 
-## Deploy on Vercel
+```bash
+pnpm dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+App available at [http://localhost:3000](http://localhost:3000).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Useful Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start dev server with hot reload |
+| `pnpm build` | Production build |
+| `pnpm start` | Serve production build |
+| `pnpm test` | Run Vitest unit tests |
+| `pnpm lint` | Run ESLint |
+| `pnpm db:migrate` | Apply pending migrations |
+| `pnpm db:seed` | Seed database |
