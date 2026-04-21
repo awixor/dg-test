@@ -1,73 +1,125 @@
 "use client";
 
 import { useState } from "react";
-import { QRCodeSVG } from "qrcode.react";
-import Image from "next/image";
-import { CloseIcon, ChevronDown, WarningIcon, TokenIcon } from "./icons";
-import { PAYMENT_ICONS } from "@/lib/constants";
+import { CloseIcon, TokenIcon, NetworkIcon } from "./icons";
+import { ComingSoon } from "./coming-soon";
 import { TokenData } from "@/lib/types";
-
-type Tab = "balance" | "deposit" | "withdraw";
-
-enum DropdownType {
-  Token = "token",
-  Network = "network",
-  None = "none",
-}
+import { TabBar, Tab } from "./deposit/tab-bar";
+import { SelectDropdown } from "./deposit/select-dropdown";
+import { DepositAddressSection } from "./deposit/deposit-address-section";
+import { BuyCryptoSection } from "./deposit/buy-crypto-section";
+import { useDepositModal, DropdownType } from "@/hooks/use-deposit-modal";
 
 export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
-  const [activeTab, setActiveTab] = useState<Tab>("deposit");
-  const [selectedTokenId, setSelectedTokenId] = useState<number>(
-    tokens[0]?.id ?? 0,
-  );
-  const [selectedNetworkIdx, setSelectedNetworkIdx] = useState(0);
-  const [copied, setCopied] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<DropdownType>(
-    DropdownType.None,
-  );
+  const [activeTab, setActiveTab] = useState<Tab>(Tab.Deposit);
 
-  const selectedToken =
-    tokens.find((token) => token.id === selectedTokenId) ?? tokens[0];
-  const selectedNetworkEntry = selectedToken?.networks[selectedNetworkIdx];
-  const depositAddress = selectedNetworkEntry?.depositAddress ?? "";
-  const minDeposit = selectedNetworkEntry?.minDeposit ?? "0";
-  const networkName = selectedNetworkEntry?.network.name ?? "";
+  const {
+    selectedToken,
+    selectedNetworkIdx,
+    selectedTokenId,
+    depositAddress,
+    minDeposit,
+    networkName,
+    networkIconUrl,
+    copied,
+    activeDropdown,
+    closeAllMenus,
+    selectToken,
+    selectNetwork,
+    toggleDropdown,
+    handleCopy,
+  } = useDepositModal(tokens);
 
-  function closeAllMenus() {
-    setActiveDropdown(DropdownType.None);
-  }
-
-  function selectToken(id: number) {
-    setSelectedTokenId(id);
-    setSelectedNetworkIdx(0);
-    closeAllMenus();
-  }
-
-  function selectNetwork(idx: number) {
-    setSelectedNetworkIdx(idx);
-    closeAllMenus();
-  }
-
-  function toggleDropdown(type: DropdownType) {
-    setActiveDropdown((prev) => (prev === type ? DropdownType.None : type));
-  }
-
-  async function handleCopy() {
-    if (!depositAddress) return;
-    try {
-      await navigator.clipboard.writeText(depositAddress);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      console.log("Failed to copy");
+  const renderContent = () => {
+    if (activeTab !== Tab.Deposit) {
+      return <ComingSoon label={activeTab} />;
     }
-  }
 
-  const TABS: { key: Tab; label: string }[] = [
-    { key: "balance", label: "Balance" },
-    { key: "deposit", label: "Deposit" },
-    { key: "withdraw", label: "Withdraw" },
-  ];
+    return (
+      <>
+        <div className="bg-modal-surface rounded-[9px] p-3">
+          <p className="text-sm text-modal-muted font-normal mb-2">
+            Choose token
+          </p>
+          <SelectDropdown
+            isOpen={activeDropdown === DropdownType.Token}
+            onToggle={() => toggleDropdown(DropdownType.Token)}
+            triggerIcon={
+              <TokenIcon
+                iconUrl={selectedToken?.iconUrl ?? null}
+                symbol={selectedToken?.symbol ?? ""}
+              />
+            }
+            triggerLabel={selectedToken?.symbol}
+            triggerBadge={
+              selectedToken?.isUnderMaintenance ? (
+                <span className="text-[10px] font-bold text-warning-text bg-warning-gold rounded px-1.5 py-0.5">
+                  Maintenance
+                </span>
+              ) : undefined
+            }
+            options={tokens.map((token) => ({
+              id: token.id,
+              label: token.symbol,
+              sublabel: token.name,
+              icon: <TokenIcon iconUrl={token.iconUrl} symbol={token.symbol} />,
+              badge: token.isUnderMaintenance ? (
+                <span className="text-[10px] font-bold text-warning-text bg-warning-gold rounded px-1.5 py-0.5">
+                  Maintenance
+                </span>
+              ) : undefined,
+              isSelected: token.id === selectedTokenId,
+            }))}
+            onSelect={(id) => selectToken(id as number)}
+          />
+        </div>
+
+        <div className="bg-modal-surface rounded-[9px] p-3">
+          <p className="text-sm text-modal-muted font-normal mb-2">
+            Choose network
+          </p>
+          <SelectDropdown
+            isOpen={activeDropdown === DropdownType.Network}
+            onToggle={() => toggleDropdown(DropdownType.Network)}
+            triggerIcon={
+              <NetworkIcon iconUrl={networkIconUrl} name={networkName} />
+            }
+            triggerLabel={networkName}
+            options={(selectedToken?.networks ?? []).map((entry, idx) => ({
+              id: entry.network.id,
+              label: entry.network.name,
+              icon: (
+                <NetworkIcon
+                  iconUrl={entry.network.iconUrl}
+                  name={entry.network.name}
+                />
+              ),
+              isSelected: idx === selectedNetworkIdx,
+            }))}
+            onSelect={(id) => {
+              const idx =
+                selectedToken?.networks.findIndex((e) => e.network.id === id) ??
+                0;
+              selectNetwork(idx);
+            }}
+          />
+        </div>
+
+        <DepositAddressSection
+          selectedToken={selectedToken}
+          networkName={networkName}
+          depositAddress={depositAddress}
+          minDeposit={minDeposit}
+          copied={copied}
+          onCopy={handleCopy}
+        />
+
+        <p className="text-center text-white text-sm">or</p>
+
+        <BuyCryptoSection />
+      </>
+    );
+  };
 
   return (
     <div
@@ -85,178 +137,9 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
             </button>
           </div>
 
-          <div className="bg-modal-dark rounded-md p-1 flex gap-1 h-9.5">
-            {TABS.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex-1 rounded-[3px] text-sm font-bold cursor-pointer transition-colors duration-150 ${
-                  activeTab === tab.key
-                    ? "bg-modal-bg text-white"
-                    : "text-modal-muted hover:text-white"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <TabBar activeTab={activeTab} onChange={setActiveTab} />
 
-          <div className="bg-modal-surface rounded-[9px] p-3">
-            <p className="text-sm text-modal-muted font-normal mb-2">
-              Choose token
-            </p>
-            <div className="relative">
-              <button
-                className="w-full flex items-center gap-2 bg-modal-bg rounded-md px-2 py-2 hover:bg-modal-hover transition-colors cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleDropdown(DropdownType.Token);
-                }}
-              >
-                <TokenIcon
-                  iconUrl={selectedToken?.iconUrl ?? null}
-                  symbol={selectedToken?.symbol ?? ""}
-                />
-                <span className="flex-1 text-left text-sm text-modal-muted">
-                  {selectedToken?.symbol}
-                </span>
-                <ChevronDown />
-              </button>
-              {activeDropdown === DropdownType.Token && (
-                <div className="absolute z-10 mt-1 w-full bg-modal-bg border border-modal-border rounded-[9px] overflow-hidden shadow-xl">
-                  {tokens.map((token) => (
-                    <button
-                      key={token.id}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-modal-icon-bg cursor-pointer transition-colors ${token.id === selectedTokenId ? "bg-modal-icon-bg" : ""}`}
-                      onClick={() => selectToken(token.id)}
-                    >
-                      <TokenIcon
-                        iconUrl={token.iconUrl}
-                        symbol={token.symbol}
-                      />
-                      <span className="font-medium text-white text-sm">
-                        {token.symbol}
-                      </span>
-                      <span className="text-modal-muted text-xs">
-                        {token.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="bg-modal-surface rounded-[9px] p-3">
-            <p className="text-sm text-modal-muted font-normal mb-2">
-              Choose network
-            </p>
-            <div className="relative">
-              <button
-                className="w-full flex items-center gap-2 bg-modal-bg cursor-pointer rounded-md px-2 py-2 hover:bg-modal-hover transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleDropdown(DropdownType.Network);
-                }}
-              >
-                <div className="w-6 h-6 rounded-full bg-modal-icon-bg shrink-0" />
-                <span className="flex-1 text-left text-sm text-modal-muted">
-                  {networkName}
-                </span>
-                <ChevronDown />
-              </button>
-              {activeDropdown === DropdownType.Network && selectedToken && (
-                <div className="absolute z-10 mt-1 w-full bg-modal-bg border border-modal-border rounded-[9px] overflow-hidden shadow-xl">
-                  {selectedToken.networks.map((entry, idx) => (
-                    <button
-                      key={entry.network.id}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 cursor-pointer text-left hover:bg-modal-icon-bg transition-colors ${idx === selectedNetworkIdx ? "bg-modal-icon-bg" : ""}`}
-                      onClick={() => selectNetwork(idx)}
-                    >
-                      <div className="w-6 h-6 rounded-full bg-modal-icon-bg shrink-0" />
-                      <span className="font-medium text-white text-sm">
-                        {entry.network.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="bg-modal-surface rounded-[9px] p-3 flex flex-col gap-4 items-center">
-            {selectedToken && networkName && (
-              <div className="flex gap-3 bg-warning-gold rounded-md p-2 w-full items-center">
-                <WarningIcon />
-                <p className="text-sm text-warning-text leading-snug">
-                  Send <strong>{selectedToken.symbol}</strong> ONLY on the{" "}
-                  <strong>{networkName} network</strong> to this address or your
-                  funds may be lost.
-                </p>
-              </div>
-            )}
-
-            {depositAddress ? (
-              <div className="bg-white p-2 rounded-md">
-                <QRCodeSVG value={depositAddress} size={120} />
-              </div>
-            ) : (
-              <div className="w-30 h-30 bg-modal-icon-bg rounded-md" />
-            )}
-
-            <div className="w-full flex flex-col gap-1">
-              <p className="text-[11.2px] text-modal-muted font-bold uppercase tracking-[0.896px]">
-                Address
-              </p>
-              <p className="text-sm text-white font-normal leading-[1.6] break-all">
-                {depositAddress}
-              </p>
-            </div>
-
-            <button
-              onClick={handleCopy}
-              disabled={!depositAddress}
-              className="w-full py-2 rounded-[9px] font-bold text-sm cursor-pointer text-accent-text bg-accent-purple border border-accent-border transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed capitalize"
-            >
-              {copied ? "Copied!" : `Copy ${selectedToken?.symbol} Address`}
-            </button>
-
-            <div className="w-full flex flex-col gap-1">
-              <p className="text-[11.2px] text-modal-muted font-bold uppercase tracking-[0.896px]">
-                Network
-              </p>
-              <p className="text-sm text-white">{networkName}</p>
-            </div>
-
-            <p className="text-sm text-modal-muted leading-[1.6] w-full">
-              Deposits less than{" "}
-              <strong className="text-white font-bold">{minDeposit}</strong>
-              <strong className="text-white font-bold">
-                {" "}
-                {selectedToken?.symbol}
-              </strong>{" "}
-              will NOT be credited to your balance.
-            </p>
-
-            <button className="text-brand-link hover:opacity-80 cursor-pointer text-sm font-bold transition-colors capitalize">
-              Transaction History
-            </button>
-          </div>
-
-          <p className="text-center text-white text-sm">or</p>
-
-          <div className="bg-modal-dark rounded-[9px] p-3 flex flex-col gap-3">
-            <button className="w-full py-2 rounded-[9px] font-bold cursor-pointer text-sm text-white bg-modal-bg hover:bg-modal-hover transition-colors capitalize">
-              Buy Crypto
-            </button>
-
-            <div className="flex items-center justify-center gap-2">
-              {PAYMENT_ICONS.map(({ id, src, alt }) => (
-                <div key={id} className="w-6 h-6 bg-modal-bg rounded-md p-1">
-                  <Image src={src} alt={alt} width={16} height={16} />
-                </div>
-              ))}
-            </div>
-          </div>
+          {renderContent()}
         </div>
       </div>
     </div>
