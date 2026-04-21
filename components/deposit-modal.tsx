@@ -1,11 +1,11 @@
 import { DepositModalView } from "./deposit-modal-view";
-import { TokenData } from "@/lib/types";
+import { TokenData, PaginationMeta } from "@/lib/types";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ??
   `http://localhost:${process.env.PORT ?? 3000}`;
 
-async function fetchTokens(): Promise<TokenData[]> {
+async function fetchTokens(): Promise<{ tokens: TokenData[]; pagination: PaginationMeta }> {
   const res = await fetch(`${BASE_URL}/api/tokens`, {
     next: { tags: ["tokens"] },
   });
@@ -13,11 +13,11 @@ async function fetchTokens(): Promise<TokenData[]> {
   if (!res.ok) throw new Error("Failed to fetch tokens");
 
   const json = await res.json();
-  return json.data;
+  return { tokens: json.data, pagination: json.pagination };
 }
 
 export async function DepositModal() {
-  const tokens = await fetchTokens();
+  const { tokens, pagination } = await fetchTokens();
 
-  return <DepositModalView tokens={tokens} />;
+  return <DepositModalView tokens={tokens} initialPagination={pagination} />;
 }

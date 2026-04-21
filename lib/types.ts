@@ -9,6 +9,14 @@ export type NetworkEntry = {
   };
 };
 
+export type PaginationMeta = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+};
+
 export type TokenData = {
   id: number;
   symbol: string;

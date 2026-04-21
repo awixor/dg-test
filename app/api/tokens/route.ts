@@ -2,7 +2,7 @@ import { cacheTag } from "next/cache";
 import { db } from "@/lib/db";
 
 const MAX_LIMIT = 50;
-const DEFAULT_LIMIT = 20;
+const DEFAULT_LIMIT = 2;
 
 async function getActiveTokens(page: number, limit: number) {
   "use cache";
@@ -47,7 +47,11 @@ export async function GET(request: Request) {
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
   const limit = Math.min(
     MAX_LIMIT,
-    Math.max(1, parseInt(searchParams.get("limit") ?? String(DEFAULT_LIMIT), 10) || DEFAULT_LIMIT),
+    Math.max(
+      1,
+      parseInt(searchParams.get("limit") ?? String(DEFAULT_LIMIT), 10) ||
+        DEFAULT_LIMIT,
+    ),
   );
 
   try {

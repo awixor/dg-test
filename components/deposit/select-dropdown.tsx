@@ -20,6 +20,9 @@ interface SelectDropdownProps {
   onToggle: () => void;
   options: SelectDropdownOption[];
   onSelect: (id: string | number) => void;
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
+  onLoadMore?: () => void;
 }
 
 export function SelectDropdown({
@@ -30,6 +33,9 @@ export function SelectDropdown({
   onToggle,
   options,
   onSelect,
+  hasMore,
+  isLoadingMore,
+  onLoadMore,
 }: SelectDropdownProps) {
   return (
     <div className="relative">
@@ -73,6 +79,15 @@ export function SelectDropdown({
               )}
             </button>
           ))}
+          {hasMore && (
+            <button
+              className="w-full px-3 py-2 text-xs text-modal-muted hover:text-white hover:bg-modal-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={(e) => { e.stopPropagation(); onLoadMore?.(); }}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? "Loading..." : "Load more"}
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -1,17 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { CloseIcon, TokenIcon, NetworkIcon } from "./icons";
+import { CloseIcon, NetworkIcon } from "./icons";
 import { ComingSoon } from "./coming-soon";
-import { TokenData } from "@/lib/types";
+import { TokenData, PaginationMeta } from "@/lib/types";
 import { TabBar, Tab } from "./deposit/tab-bar";
+import { TokenSelectDropdown } from "./deposit/token-select-dropdown";
 import { SelectDropdown } from "./deposit/select-dropdown";
 import { DepositAddressSection } from "./deposit/deposit-address-section";
 import { BuyCryptoSection } from "./deposit/buy-crypto-section";
 import { useDepositModal, DropdownType } from "@/hooks/use-deposit-modal";
+import { useTokenPagination } from "@/hooks/use-token-pagination";
 
-export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
+export function DepositModalView({
+  tokens: initialTokens,
+  initialPagination,
+}: {
+  tokens: TokenData[];
+  initialPagination: PaginationMeta;
+}) {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Deposit);
+
+  const { allTokens, pagination, isLoadingMore, loadMore } = useTokenPagination(
+    initialTokens,
+    initialPagination,
+  );
 
   const {
     selectedToken,
@@ -28,7 +41,7 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
     selectNetwork,
     toggleDropdown,
     handleCopy,
-  } = useDepositModal(tokens);
+  } = useDepositModal(allTokens);
 
   const renderContent = () => {
     if (activeTab !== Tab.Deposit) {
@@ -41,36 +54,16 @@ export function DepositModalView({ tokens }: { tokens: TokenData[] }) {
           <p className="text-sm text-modal-muted font-normal mb-2">
             Choose token
           </p>
-          <SelectDropdown
+          <TokenSelectDropdown
+            tokens={allTokens}
+            pagination={pagination}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={loadMore}
+            selectedTokenId={selectedTokenId}
+            selectedToken={selectedToken}
             isOpen={activeDropdown === DropdownType.Token}
             onToggle={() => toggleDropdown(DropdownType.Token)}
-            triggerIcon={
-              <TokenIcon
-                iconUrl={selectedToken?.iconUrl ?? null}
-                symbol={selectedToken?.symbol ?? ""}
-              />
-            }
-            triggerLabel={selectedToken?.symbol}
-            triggerBadge={
-              selectedToken?.isUnderMaintenance ? (
-                <span className="text-[10px] font-bold text-warning-text bg-warning-gold rounded px-1.5 py-0.5">
-                  Maintenance
-                </span>
-              ) : undefined
-            }
-            options={tokens.map((token) => ({
-              id: token.id,
-              label: token.symbol,
-              sublabel: token.name,
-              icon: <TokenIcon iconUrl={token.iconUrl} symbol={token.symbol} />,
-              badge: token.isUnderMaintenance ? (
-                <span className="text-[10px] font-bold text-warning-text bg-warning-gold rounded px-1.5 py-0.5">
-                  Maintenance
-                </span>
-              ) : undefined,
-              isSelected: token.id === selectedTokenId,
-            }))}
-            onSelect={(id) => selectToken(id as number)}
+            onSelect={selectToken}
           />
         </div>
 
