@@ -8,23 +8,39 @@ async function main() {
   const networks = await Promise.all([
     prisma.network.upsert({
       where: { slug: "ethereum" },
-      update: {},
-      create: { name: "Ethereum", slug: "ethereum" },
+      update: { iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png" },
+      create: {
+        name: "Ethereum",
+        slug: "ethereum",
+        iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
+      },
     }),
     prisma.network.upsert({
       where: { slug: "tron" },
-      update: {},
-      create: { name: "Tron", slug: "tron" },
+      update: { iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png" },
+      create: {
+        name: "Tron",
+        slug: "tron",
+        iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+      },
     }),
     prisma.network.upsert({
       where: { slug: "polygon" },
-      update: {},
-      create: { name: "Polygon", slug: "polygon" },
+      update: { iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png" },
+      create: {
+        name: "Polygon",
+        slug: "polygon",
+        iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
+      },
     }),
     prisma.network.upsert({
       where: { slug: "bitcoin" },
-      update: {},
-      create: { name: "Bitcoin", slug: "bitcoin" },
+      update: { iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png" },
+      create: {
+        name: "Bitcoin",
+        slug: "bitcoin",
+        iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png",
+      },
     }),
   ]);
 
@@ -32,20 +48,35 @@ async function main() {
 
   const usdt = await prisma.token.upsert({
     where: { symbol: "USDT" },
-    update: {},
-    create: { symbol: "USDT", name: "Tether", displayOrder: 1 },
+    update: { iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png" },
+    create: {
+      symbol: "USDT",
+      name: "Tether",
+      displayOrder: 1,
+      iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    },
   });
 
   const usdc = await prisma.token.upsert({
     where: { symbol: "USDC" },
-    update: {},
-    create: { symbol: "USDC", name: "USD Coin", displayOrder: 2 },
+    update: { iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png" },
+    create: {
+      symbol: "USDC",
+      name: "USD Coin",
+      displayOrder: 2,
+      iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    },
   });
 
   const btc = await prisma.token.upsert({
     where: { symbol: "BTC" },
-    update: {},
-    create: { symbol: "BTC", name: "Bitcoin", displayOrder: 3 },
+    update: { iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png" },
+    create: {
+      symbol: "BTC",
+      name: "Bitcoin",
+      displayOrder: 3,
+      iconUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png",
+    },
   });
 
   const tokenNetworks = [

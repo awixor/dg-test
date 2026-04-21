@@ -1,14 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import Image from "next/image";
 
-export function TokenIcon({
+export function NetworkIcon({
   iconUrl,
-  symbol,
+  name,
 }: {
   iconUrl: string | null;
-  symbol: string;
+  name: string;
 }) {
   const [failed, setFailed] = useState(false);
 
@@ -18,7 +18,7 @@ export function TokenIcon({
         width={24}
         height={24}
         src={iconUrl}
-        alt={symbol}
+        alt={name}
         className="w-6 h-6 rounded-full object-cover shrink-0"
         onError={() => setFailed(true)}
       />
@@ -26,7 +26,7 @@ export function TokenIcon({
   }
   return (
     <div className="w-6 h-6 rounded-full bg-modal-icon-bg flex items-center justify-center text-xs font-bold text-modal-muted shrink-0">
-      {symbol[0]}
+      {name[0]}
     </div>
   );
 }
