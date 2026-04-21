@@ -14,6 +14,29 @@ Crypto deposit modal — Next.js 16, Prisma 7, PostgreSQL, Tailwind 4.
 
 ---
 
+## Docker (recommended)
+
+Requires [Docker](https://docs.docker.com/get-docker/) with the Compose plugin.
+
+```bash
+docker compose up --build
+```
+
+That's it. Compose will:
+1. Start a PostgreSQL 16 container
+2. Build the app image
+3. Run all Prisma migrations
+4. Seed the database
+5. Start the app on [http://localhost:3000](http://localhost:3000)
+
+Data persists in a named Docker volume (`postgres_data`). To reset it:
+
+```bash
+docker compose down -v
+```
+
+---
+
 ## Local Setup
 
 ### 1. Install dependencies
