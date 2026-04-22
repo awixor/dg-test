@@ -23,6 +23,7 @@ interface SelectDropdownProps {
   hasMore?: boolean;
   isLoadingMore?: boolean;
   onLoadMore?: () => void;
+  loadMoreError?: string | null;
 }
 
 export function SelectDropdown({
@@ -35,6 +36,7 @@ export function SelectDropdown({
   onSelect,
   hasMore,
   isLoadingMore,
+  loadMoreError,
   onLoadMore,
 }: SelectDropdownProps) {
   return (
@@ -82,11 +84,19 @@ export function SelectDropdown({
           {hasMore && (
             <button
               className="w-full px-3 py-2 text-xs text-modal-muted hover:text-white hover:bg-modal-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={(e) => { e.stopPropagation(); onLoadMore?.(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onLoadMore?.();
+              }}
               disabled={isLoadingMore}
             >
               {isLoadingMore ? "Loading..." : "Load more"}
             </button>
+          )}
+          {loadMoreError && (
+            <p className="text-xs text-red-400 py-1 text-center">
+              {loadMoreError}
+            </p>
           )}
         </div>
       )}

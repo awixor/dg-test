@@ -21,10 +21,8 @@ export function DepositModalView({
 }) {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Deposit);
 
-  const { allTokens, pagination, isLoadingMore, loadMore } = useTokenPagination(
-    initialTokens,
-    initialPagination,
-  );
+  const { allTokens, pagination, isLoadingMore, loadMoreError, loadMore } =
+    useTokenPagination(initialTokens, initialPagination);
 
   const {
     selectedToken,
@@ -64,6 +62,7 @@ export function DepositModalView({
             isOpen={activeDropdown === DropdownType.Token}
             onToggle={() => toggleDropdown(DropdownType.Token)}
             onSelect={selectToken}
+            loadMoreError={loadMoreError}
           />
         </div>
 

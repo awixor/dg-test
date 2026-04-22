@@ -14,6 +14,7 @@ interface TokenSelectDropdownProps {
   isOpen: boolean;
   onToggle: () => void;
   onSelect: (id: number) => void;
+  loadMoreError?: string | null;
 }
 
 export function TokenSelectDropdown({
@@ -26,6 +27,7 @@ export function TokenSelectDropdown({
   isOpen,
   onToggle,
   onSelect,
+  loadMoreError,
 }: TokenSelectDropdownProps) {
   return (
     <SelectDropdown
@@ -61,6 +63,7 @@ export function TokenSelectDropdown({
       hasMore={pagination.hasNextPage}
       isLoadingMore={isLoadingMore}
       onLoadMore={onLoadMore}
+      loadMoreError={loadMoreError}
     />
   );
 }

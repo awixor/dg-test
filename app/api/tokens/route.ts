@@ -1,45 +1,4 @@
-import { cacheTag } from "next/cache";
-import { db } from "@/lib/db";
-
-const MAX_LIMIT = 50;
-const DEFAULT_LIMIT = 2;
-
-async function getActiveTokens(page: number, limit: number) {
-  "use cache";
-  cacheTag("tokens");
-
-  return db.token.findMany({
-    where: { isEnabled: true },
-    orderBy: { displayOrder: "asc" },
-    skip: (page - 1) * limit,
-    take: limit,
-    select: {
-      id: true,
-      symbol: true,
-      name: true,
-      iconUrl: true,
-      isUnderMaintenance: true,
-      displayOrder: true,
-      networks: {
-        where: { isActive: true },
-        select: {
-          depositAddress: true,
-          minDeposit: true,
-          network: {
-            select: { id: true, name: true, slug: true, iconUrl: true },
-          },
-        },
-      },
-    },
-  });
-}
-
-async function countActiveTokens() {
-  "use cache";
-  cacheTag("tokens");
-
-  return db.token.count({ where: { isEnabled: true } });
-}
+import { getActiveTokens, countActiveTokens, DEFAULT_LIMIT, MAX_LIMIT } from "@/data/tokens";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
