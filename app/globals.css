@@ -38,3 +38,29 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@layer components {
+  .scrollbar-modal {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-modal-border) transparent;
+    scrollbar-gutter: stable both-edges;
+  }
+  .scrollbar-modal::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-modal::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-modal::-webkit-scrollbar-thumb {
+    background: var(--color-modal-border);
+    border-radius: 9999px;
+  }
+  .scrollbar-modal:hover::-webkit-scrollbar-thumb {
+    background: var(--color-modal-icon-bg);
+  }
+
+  .scroll-fade-top {
+    mask-image: linear-gradient(to bottom, transparent 0, black 20px);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 20px);
+  }
+}

@@ -119,10 +119,10 @@ export function DepositModalView({
       onClick={closeAllMenus}
     >
       <div
-        className="w-full max-w-95.5 bg-modal-bg border border-modal-border rounded-[9px] overflow-hidden"
+        className="w-full max-w-95.5 max-h-[90vh] bg-modal-bg border border-modal-border rounded-[9px] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex flex-col gap-4 px-3 pt-3 pb-6">
+        <div className="flex flex-col gap-4 px-3 pt-3">
           <div className="flex justify-end">
             <button className="text-white hover:opacity-70 transition-opacity cursor-pointer">
               <CloseIcon />
@@ -130,7 +130,9 @@ export function DepositModalView({
           </div>
 
           <TabBar activeTab={activeTab} onChange={setActiveTab} />
+        </div>
 
+        <div className="flex flex-col gap-4 px-1 pt-6 pb-4 mb-2 overflow-y-auto scrollbar-modal scroll-fade-top">
           {renderContent()}
         </div>
       </div>
