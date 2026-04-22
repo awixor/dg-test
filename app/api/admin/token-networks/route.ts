@@ -8,7 +8,8 @@ export async function GET() {
       orderBy: [{ tokenId: "asc" }, { networkId: "asc" }],
     });
     return Response.json({ data: tokenNetworks });
-  } catch {
+  } catch (err) {
+    console.error("GET /api/admin/token-networks failed:", err);
     return Response.json(
       { error: "Failed to fetch token-networks" },
       { status: 500 },
@@ -36,9 +37,10 @@ export async function POST(request: Request) {
       include: { token: true, network: true },
     });
 
-    revalidateTag("tokens", { expire: 0 });
+    revalidateTag("tokens:list", { expire: 0 });
     return Response.json({ data: tokenNetwork }, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error("POST /api/admin/token-networks failed:", err);
     return Response.json(
       { error: "Failed to create token-network" },
       { status: 500 },

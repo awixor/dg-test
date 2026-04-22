@@ -116,7 +116,7 @@ async function main() {
     {
       tokenId: btc.id,
       networkId: bitcoin.id,
-      depositAddress: "0xadj9f8s9mfkjs9djmskdcmjjsd8778sdjfl3404fFD",
+      depositAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
       minDeposit: "0.00000500",
     },
   ];

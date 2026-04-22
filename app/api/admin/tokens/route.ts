@@ -12,7 +12,8 @@ export async function GET() {
       },
     });
     return Response.json({ data: tokens });
-  } catch {
+  } catch (err) {
+    console.error("GET /api/admin/tokens failed:", err);
     return Response.json({ error: "Failed to fetch tokens" }, { status: 500 });
   }
 }
@@ -30,9 +31,11 @@ export async function POST(request: Request) {
       data: { symbol, name, iconUrl, isEnabled, isUnderMaintenance, displayOrder },
     });
 
-    revalidateTag("tokens", { expire: 0 });
+    revalidateTag("tokens:list", { expire: 0 });
+    revalidateTag("tokens:count", { expire: 0 });
     return Response.json({ data: token }, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error("POST /api/admin/tokens failed:", err);
     return Response.json({ error: "Failed to create token" }, { status: 500 });
   }
 }

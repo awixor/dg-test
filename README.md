@@ -20,7 +20,7 @@ Requires [Docker](https://docs.docker.com/get-docker/) with the Compose plugin.
 
 ```bash
 # docker compose up --build
-DB_USERNAME=postgres DB_PASSWORD=postgres DB_DATABASE=dg_test ADMIN_SECRET=admin-secret docker-compose up --build
+DB_USERNAME=postgres DB_PASSWORD=postgres DB_NAME=dg_test ADMIN_SECRET=admin-secret docker-compose up --build
 
 ```
 

@@ -11,7 +11,8 @@ export async function GET(
 
     if (!network) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json({ data: network });
-  } catch {
+  } catch (err) {
+    console.error(`GET /api/admin/networks/${(await ctx.params).id} failed:`, err);
     return Response.json({ error: "Failed to fetch network" }, { status: 500 });
   }
 }
@@ -30,9 +31,10 @@ export async function PUT(
       data: { name, slug, iconUrl },
     });
 
-    revalidateTag("tokens", { expire: 0 });
+    revalidateTag("tokens:list", { expire: 0 });
     return Response.json({ data: network });
-  } catch {
+  } catch (err) {
+    console.error(`PUT /api/admin/networks/${(await ctx.params).id} failed:`, err);
     return Response.json(
       { error: "Failed to update network" },
       { status: 500 },
@@ -47,9 +49,10 @@ export async function DELETE(
   try {
     const { id } = await ctx.params;
     await db.network.delete({ where: { id: Number(id) } });
-    revalidateTag("tokens", { expire: 0 });
+    revalidateTag("tokens:list", { expire: 0 });
     return new Response(null, { status: 204 });
-  } catch {
+  } catch (err) {
+    console.error(`DELETE /api/admin/networks/${(await ctx.params).id} failed:`, err);
     return Response.json(
       { error: "Failed to delete network" },
       { status: 500 },

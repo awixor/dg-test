@@ -14,7 +14,8 @@ export async function GET(
 
     if (!token) return Response.json({ error: "Not found" }, { status: 404 });
     return Response.json({ data: token });
-  } catch {
+  } catch (err) {
+    console.error(`GET /api/admin/tokens/${(await ctx.params).id} failed:`, err);
     return Response.json({ error: "Failed to fetch token" }, { status: 500 });
   }
 }
@@ -47,9 +48,11 @@ export async function PUT(
       },
     });
 
-    revalidateTag("tokens", { expire: 0 });
+    revalidateTag("tokens:list", { expire: 0 });
+    revalidateTag("tokens:count", { expire: 0 });
     return Response.json({ data: token });
-  } catch {
+  } catch (err) {
+    console.error(`PUT /api/admin/tokens/${(await ctx.params).id} failed:`, err);
     return Response.json({ error: "Failed to update token" }, { status: 500 });
   }
 }
@@ -61,9 +64,11 @@ export async function DELETE(
   try {
     const { id } = await ctx.params;
     await db.token.delete({ where: { id: Number(id) } });
-    revalidateTag("tokens", { expire: 0 });
+    revalidateTag("tokens:list", { expire: 0 });
+    revalidateTag("tokens:count", { expire: 0 });
     return new Response(null, { status: 204 });
-  } catch {
+  } catch (err) {
+    console.error(`DELETE /api/admin/tokens/${(await ctx.params).id} failed:`, err);
     return Response.json({ error: "Failed to delete token" }, { status: 500 });
   }
 }

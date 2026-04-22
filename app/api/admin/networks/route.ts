@@ -5,7 +5,8 @@ export async function GET() {
   try {
     const networks = await db.network.findMany({ orderBy: { name: "asc" } });
     return Response.json({ data: networks });
-  } catch {
+  } catch (err) {
+    console.error("GET /api/admin/networks failed:", err);
     return Response.json({ error: "Failed to fetch networks" }, { status: 500 });
   }
 }
@@ -20,9 +21,10 @@ export async function POST(request: Request) {
     }
 
     const network = await db.network.create({ data: { name, slug, iconUrl } });
-    revalidateTag("tokens", { expire: 0 });
+    revalidateTag("tokens:list", { expire: 0 });
     return Response.json({ data: network }, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error("POST /api/admin/networks failed:", err);
     return Response.json({ error: "Failed to create network" }, { status: 500 });
   }
 }

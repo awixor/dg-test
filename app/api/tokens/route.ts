@@ -1,4 +1,4 @@
-import { getActiveTokens, countActiveTokens, DEFAULT_LIMIT, MAX_LIMIT } from "@/data/tokens";
+import { getActiveTokensWithCount, DEFAULT_LIMIT, MAX_LIMIT } from "@/data/tokens";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -14,22 +14,14 @@ export async function GET(request: Request) {
   );
 
   try {
-    const [tokens, total] = await Promise.all([
-      getActiveTokens(page, limit),
-      countActiveTokens(),
-    ]);
+    const { tokens, pagination } = await getActiveTokensWithCount(page, limit);
 
     return Response.json({
       data: tokens,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-        hasNextPage: page * limit < total,
-      },
+      pagination,
     });
-  } catch {
+  } catch (err) {
+    console.error("GET /api/tokens failed:", err);
     return Response.json({ error: "Failed to fetch tokens" }, { status: 500 });
   }
 }
