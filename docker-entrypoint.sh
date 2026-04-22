@@ -9,8 +9,8 @@ done
 echo "Running migrations..."
 pnpm exec prisma migrate deploy
 
-echo "Seeding database..."
-pnpm exec prisma db seed
+echo "Building app..."
+pnpm run build
 
 echo "Starting app..."
 exec pnpm run start

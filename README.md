@@ -6,11 +6,11 @@ Crypto deposit modal — Next.js 16, Prisma 7, PostgreSQL, Tailwind 4.
 
 ## Prerequisites
 
-| Tool | Version |
-|------|---------|
-| Node.js | 20+ |
-| pnpm | 9+ |
-| PostgreSQL | 14+ |
+| Tool       | Version |
+| ---------- | ------- |
+| Node.js    | 20+     |
+| pnpm       | 9+      |
+| PostgreSQL | 14+     |
 
 ---
 
@@ -19,10 +19,13 @@ Crypto deposit modal — Next.js 16, Prisma 7, PostgreSQL, Tailwind 4.
 Requires [Docker](https://docs.docker.com/get-docker/) with the Compose plugin.
 
 ```bash
-docker compose up --build
+# docker compose up --build
+DB_USERNAME=postgres DB_PASSWORD=postgres DB_DATABASE=dg_test ADMIN_SECRET=admin-secret docker-compose up --build
+
 ```
 
 That's it. Compose will:
+
 1. Start a PostgreSQL 16 container
 2. Build the app image
 3. Run all Prisma migrations
@@ -76,12 +79,12 @@ App available at [http://localhost:3000](http://localhost:3000).
 
 ## Useful Commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start dev server with hot reload |
-| `pnpm build` | Production build |
-| `pnpm start` | Serve production build |
-| `pnpm test` | Run Vitest unit tests |
-| `pnpm lint` | Run ESLint |
-| `pnpm db:migrate` | Apply pending migrations |
-| `pnpm db:seed` | Seed database |
+| Command           | Description                      |
+| ----------------- | -------------------------------- |
+| `pnpm dev`        | Start dev server with hot reload |
+| `pnpm build`      | Production build                 |
+| `pnpm start`      | Serve production build           |
+| `pnpm test`       | Run Vitest unit tests            |
+| `pnpm lint`       | Run ESLint                       |
+| `pnpm db:migrate` | Apply pending migrations         |
+| `pnpm db:seed`    | Seed database                    |
