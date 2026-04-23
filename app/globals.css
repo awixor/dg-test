@@ -40,22 +40,32 @@ body {
 }
 
 @layer components {
-  .scrollbar-modal {
+  .scrollbar-modal,
+  .scrollbar-modal-end {
     scrollbar-width: thin;
     scrollbar-color: var(--color-modal-border) transparent;
+  }
+  .scrollbar-modal {
     scrollbar-gutter: stable both-edges;
   }
-  .scrollbar-modal::-webkit-scrollbar {
+  .scrollbar-modal-end {
+    scrollbar-gutter: stable;
+  }
+  .scrollbar-modal::-webkit-scrollbar,
+  .scrollbar-modal-end::-webkit-scrollbar {
     width: 6px;
   }
-  .scrollbar-modal::-webkit-scrollbar-track {
+  .scrollbar-modal::-webkit-scrollbar-track,
+  .scrollbar-modal-end::-webkit-scrollbar-track {
     background: transparent;
   }
-  .scrollbar-modal::-webkit-scrollbar-thumb {
+  .scrollbar-modal::-webkit-scrollbar-thumb,
+  .scrollbar-modal-end::-webkit-scrollbar-thumb {
     background: var(--color-modal-border);
     border-radius: 9999px;
   }
-  .scrollbar-modal:hover::-webkit-scrollbar-thumb {
+  .scrollbar-modal:hover::-webkit-scrollbar-thumb,
+  .scrollbar-modal-end:hover::-webkit-scrollbar-thumb {
     background: var(--color-modal-icon-bg);
   }
 

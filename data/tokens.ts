@@ -4,7 +4,7 @@ import { cacheTag, cacheLife } from "next/cache";
 import { db } from "@/lib/db";
 import { PaginationMeta } from "@/lib/types";
 
-export const DEFAULT_LIMIT = 2;
+export const DEFAULT_LIMIT = 5;
 export const MAX_LIMIT = 50;
 
 export function buildPaginationMeta(

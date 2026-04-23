@@ -10,9 +10,9 @@ export function TokenIcon({
   iconUrl: string | null;
   symbol: string;
 }) {
-  const [failed, setFailed] = useState(false);
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
-  if (iconUrl && !failed) {
+  if (iconUrl && iconUrl !== failedUrl) {
     return (
       <Image
         width={24}
@@ -20,7 +20,7 @@ export function TokenIcon({
         src={iconUrl}
         alt={symbol}
         className="w-6 h-6 rounded-full object-cover shrink-0"
-        onError={() => setFailed(true)}
+        onError={() => setFailedUrl(iconUrl)}
       />
     );
   }

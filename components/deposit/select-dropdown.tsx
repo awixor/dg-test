@@ -1,7 +1,8 @@
 "use client";
 
 import { ChevronDown, CheckIcon } from "@/components/icons";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 interface SelectDropdownOption {
   id: string | number;
@@ -41,10 +42,23 @@ export function SelectDropdown({
   loadMoreError,
   onLoadMore,
 }: SelectDropdownProps) {
+  const [scrollEl, setScrollEl] = useState<HTMLDivElement | null>(null);
+  const { ref: sentinelRef, inView } = useInView({
+    root: scrollEl,
+    threshold: 0,
+    rootMargin: "0px 0px 40px 0px",
+  });
+
+  useEffect(() => {
+    if (!isOpen || !hasMore || isLoadingMore || loadMoreError) return;
+    if (inView) onLoadMore?.();
+  }, [inView, isOpen, hasMore, isLoadingMore, loadMoreError, onLoadMore]);
+
   return (
     <div className="relative">
       <button
         id={id}
+        type="button"
         className="w-full flex items-center gap-2 bg-modal-bg rounded-md px-2 py-2 hover:bg-modal-hover transition-colors cursor-pointer"
         onClick={(e) => {
           e.stopPropagation();
@@ -60,46 +74,71 @@ export function SelectDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-modal-bg border border-modal-border rounded-[9px] overflow-hidden shadow-xl">
-          {options.map((opt) => (
+        <div
+          ref={setScrollEl}
+          className="absolute z-10 mt-1 w-full max-h-64 overflow-y-auto bg-modal-bg border border-modal-border rounded-[9px] shadow-xl scrollbar-modal-end"
+        >
+          {options.map((option) => (
             <button
-              key={opt.id}
+              key={option.id}
+              ref={
+                option.isSelected
+                  ? (element) => element?.scrollIntoView({ block: "nearest" })
+                  : undefined
+              }
               className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-modal-hover cursor-pointer transition-colors ${
-                opt.isSelected ? "bg-modal-icon-bg" : ""
+                option.isSelected ? "bg-modal-icon-bg" : ""
               }`}
-              onClick={() => onSelect(opt.id)}
+              onClick={() => onSelect(option.id)}
             >
-              {opt.icon}
+              {option.icon}
               <span className="font-medium text-white text-sm flex-1">
-                {opt.label}
+                {option.label}
               </span>
-              {opt.sublabel && (
-                <span className="text-modal-muted text-xs">{opt.sublabel}</span>
+              {option.sublabel && (
+                <span className="text-modal-muted text-xs">
+                  {option.sublabel}
+                </span>
               )}
-              {opt.badge}
-              {opt.isSelected && (
+              {option.badge}
+              {option.isSelected && (
                 <span className="text-white shrink-0">
                   <CheckIcon />
                 </span>
               )}
             </button>
           ))}
-          {hasMore && (
-            <button
-              className="w-full px-3 py-2 text-xs text-modal-muted hover:text-white hover:bg-modal-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={(e) => {
-                e.stopPropagation();
-                onLoadMore?.();
-              }}
-              disabled={isLoadingMore}
+          {hasMore && !loadMoreError && (
+            <div
+              ref={sentinelRef}
+              className="w-full flex items-center justify-center px-3 py-2 h-8"
+              aria-live="polite"
+              aria-busy={isLoadingMore}
             >
-              {isLoadingMore ? "Loading..." : "Load more"}
-            </button>
+              {isLoadingMore && (
+                <span
+                  role="status"
+                  aria-label="Loading more"
+                  className="w-4 h-4 rounded-full border-2 border-modal-muted border-t-transparent animate-spin"
+                />
+              )}
+            </div>
           )}
           {loadMoreError && (
-            <p className="text-xs text-red-400 py-1 text-center">
-              {loadMoreError}
-            </p>
+            <div className="flex flex-col items-center gap-1 py-2">
+              <p className="text-xs text-red-400 text-center">
+                {loadMoreError}
+              </p>
+              <button
+                className="text-xs text-modal-muted hover:text-white cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onLoadMore?.();
+                }}
+              >
+                Retry
+              </button>
+            </div>
           )}
         </div>
       )}

@@ -47,7 +47,7 @@ export function DepositAddressSection({
           <QRCodeSVG value={depositAddress} size={120} />
         </div>
       ) : (
-        <div className="w-30 h-30 bg-modal-icon-bg rounded-md" />
+        <div className="w-34 h-34 bg-modal-icon-bg rounded-md" />
       )}
 
       <div className="w-full flex flex-col gap-1">
@@ -85,7 +85,10 @@ export function DepositAddressSection({
       <p className="text-sm text-modal-muted leading-[1.6] w-full">
         Deposits less than{" "}
         <strong className="text-white font-bold">{minDeposit}</strong>
-        <strong className="text-white font-bold"> {selectedToken?.symbol}</strong>{" "}
+        <strong className="text-white font-bold">
+          {" "}
+          {selectedToken?.symbol}
+        </strong>{" "}
         will NOT be credited to your balance.
       </p>
 
