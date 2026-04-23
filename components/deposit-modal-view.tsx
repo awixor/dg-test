@@ -53,6 +53,7 @@ export function DepositModalView({
             Choose token
           </p>
           <TokenSelectDropdown
+            id="token-select-dropdown"
             tokens={allTokens}
             pagination={pagination}
             isLoadingMore={isLoadingMore}
@@ -71,6 +72,7 @@ export function DepositModalView({
             Choose network
           </p>
           <SelectDropdown
+            id="network-select-dropdown"
             isOpen={activeDropdown === DropdownType.Network}
             onToggle={() => toggleDropdown(DropdownType.Network)}
             triggerIcon={
@@ -124,7 +126,10 @@ export function DepositModalView({
       >
         <div className="flex flex-col gap-4 px-3 pt-3">
           <div className="flex justify-end">
-            <button className="text-white hover:opacity-70 transition-opacity cursor-pointer">
+            <button
+              id="close-modal-button"
+              className="text-white hover:opacity-70 transition-opacity cursor-pointer"
+            >
               <CloseIcon />
             </button>
           </div>

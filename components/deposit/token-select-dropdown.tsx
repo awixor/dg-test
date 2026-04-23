@@ -5,6 +5,7 @@ import { TokenData, PaginationMeta } from "@/lib/types";
 import { SelectDropdown } from "./select-dropdown";
 
 interface TokenSelectDropdownProps {
+  id?: string;
   tokens: TokenData[];
   pagination: PaginationMeta;
   isLoadingMore: boolean;
@@ -18,6 +19,7 @@ interface TokenSelectDropdownProps {
 }
 
 export function TokenSelectDropdown({
+  id,
   tokens,
   pagination,
   isLoadingMore,
@@ -31,6 +33,7 @@ export function TokenSelectDropdown({
 }: TokenSelectDropdownProps) {
   return (
     <SelectDropdown
+      id={id}
       isOpen={isOpen}
       onToggle={onToggle}
       triggerIcon={

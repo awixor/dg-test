@@ -4,8 +4,11 @@ import { DepositModalSkeleton } from "@/components/deposit-modal-skeleton";
 
 export default async function Home() {
   return (
-    <Suspense fallback={<DepositModalSkeleton />}>
-      <DepositModal />
-    </Suspense>
+    <main>
+      <h1 className="sr-only">Crypto Deposit Portal</h1>
+      <Suspense fallback={<DepositModalSkeleton />}>
+        <DepositModal />
+      </Suspense>
+    </main>
   );
 }

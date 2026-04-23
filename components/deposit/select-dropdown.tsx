@@ -13,6 +13,7 @@ interface SelectDropdownOption {
 }
 
 interface SelectDropdownProps {
+  id?: string;
   triggerIcon?: ReactNode;
   triggerLabel?: ReactNode;
   triggerBadge?: ReactNode;
@@ -27,6 +28,7 @@ interface SelectDropdownProps {
 }
 
 export function SelectDropdown({
+  id,
   triggerIcon,
   triggerLabel,
   triggerBadge,
@@ -42,6 +44,7 @@ export function SelectDropdown({
   return (
     <div className="relative">
       <button
+        id={id}
         className="w-full flex items-center gap-2 bg-modal-bg rounded-md px-2 py-2 hover:bg-modal-hover transition-colors cursor-pointer"
         onClick={(e) => {
           e.stopPropagation();

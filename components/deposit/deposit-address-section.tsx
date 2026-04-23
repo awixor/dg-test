@@ -67,6 +67,7 @@ export function DepositAddressSection({
       </div>
 
       <button
+        id="copy-address-button"
         onClick={onCopy}
         disabled={!depositAddress || isUnderMaintenance}
         className="w-full py-2 rounded-[9px] font-bold text-sm cursor-pointer text-accent-text bg-accent-purple border border-accent-border transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed capitalize"
