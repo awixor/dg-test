@@ -1,8 +1,9 @@
 "use client";
 
 import { ChevronDown, CheckIcon } from "@/components/icons";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, useRef } from "react";
 import { useInView } from "react-intersection-observer";
+import { useClickOutside } from "@/hooks/use-click-outside";
 
 interface SelectDropdownOption {
   id: string | number;
@@ -42,6 +43,7 @@ export function SelectDropdown({
   loadMoreError,
   onLoadMore,
 }: SelectDropdownProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [scrollEl, setScrollEl] = useState<HTMLDivElement | null>(null);
   const { ref: sentinelRef, inView } = useInView({
     root: scrollEl,
@@ -54,8 +56,10 @@ export function SelectDropdown({
     if (inView) onLoadMore?.();
   }, [inView, isOpen, hasMore, isLoadingMore, loadMoreError, onLoadMore]);
 
+  useClickOutside(containerRef, onToggle, isOpen);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         id={id}
         type="button"
