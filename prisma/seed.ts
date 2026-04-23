@@ -55,7 +55,7 @@ function getTokenLogo(symbol: string) {
     ETH: "ethereum",
     BNB: "binance",
     SOL: "solana",
-    XRP: "xrp",
+    XRP: "ripple",
     ADA: "cardano",
     DOGE: "doge",
     TRX: "tron",
@@ -73,10 +73,10 @@ function getTokenLogo(symbol: string) {
   const ethTokens: Record<string, string> = {
     USDT: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
     USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-    LINK: "0x514910771af9ca656af840dff83e8264ecf986ca",
-    SHIB: "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
-    UNI: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
-    PEPE: "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+    LINK: "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+    SHIB: "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
+    UNI: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+    PEPE: "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
   };
 
   if (ethTokens[symbol]) {
