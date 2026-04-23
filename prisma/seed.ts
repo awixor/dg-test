@@ -27,10 +27,8 @@ const TOKENS = [
   { symbol: "SOL", name: "Solana", displayOrder: 6 },
   { symbol: "XRP", name: "XRP", displayOrder: 7 },
   { symbol: "ADA", name: "Cardano", displayOrder: 8, isEnabled: false },
-  { symbol: "DOGE", name: "Dogecoin", displayOrder: 9 },
   { symbol: "TRX", name: "TRON", displayOrder: 10 },
   { symbol: "DOT", name: "Polkadot", displayOrder: 11 },
-  { symbol: "LTC", name: "Litecoin", displayOrder: 12 },
   { symbol: "MATIC", name: "Polygon", displayOrder: 13 },
   { symbol: "LINK", name: "Chainlink", displayOrder: 14 },
   {
@@ -57,10 +55,8 @@ function getTokenLogo(symbol: string) {
     SOL: "solana",
     XRP: "ripple",
     ADA: "cardano",
-    DOGE: "doge",
     TRX: "tron",
     DOT: "polkadot",
-    LTC: "litecoin",
     MATIC: "polygon",
     AVAX: "avalanchec",
   };
@@ -214,26 +210,12 @@ async function main() {
       address: "0x1d2f0da1690b98c50777a1b233a921d7b0f2070b",
       min: "10",
     },
-    // DOGE
-    {
-      symbol: "DOGE",
-      slug: "bitcoin",
-      address: "D86v6x17H96x17H96x17H96x17H96x17H9",
-      min: "50",
-    },
     // DOT
     {
       symbol: "DOT",
       slug: "ethereum",
       address: "0x7083609fce4d1d8dc0c979aab8c869ea2c873402",
       min: "1",
-    },
-    // LTC
-    {
-      symbol: "LTC",
-      slug: "bitcoin",
-      address: "L8vK8a8L8vK8a8L8vK8a8L8vK8a8L8vK8a",
-      min: "0.1",
     },
     // AVAX
     {

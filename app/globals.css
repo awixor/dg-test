@@ -48,9 +48,6 @@ body {
   .scrollbar-modal {
     scrollbar-gutter: stable both-edges;
   }
-  .scrollbar-modal-end {
-    scrollbar-gutter: stable;
-  }
   .scrollbar-modal::-webkit-scrollbar,
   .scrollbar-modal-end::-webkit-scrollbar {
     width: 6px;

@@ -84,7 +84,7 @@ export function DepositAddressSection({
 
       <p className="text-sm text-modal-muted leading-[1.6] w-full">
         Deposits less than{" "}
-        <strong className="text-white font-bold">{minDeposit}</strong>
+        <strong className="text-white font-bold">{Number(minDeposit).toLocaleString()}</strong>
         <strong className="text-white font-bold">
           {" "}
           {selectedToken?.symbol}

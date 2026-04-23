@@ -27,13 +27,17 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN apk add --no-cache postgresql-client
 
-COPY --from=builder /app/public ./public
+RUN addgroup -S app && adduser -S app -G app
+
+COPY --from=builder --chown=app:app /app/public ./public
 # Automatically leverage output traces to reduce image size
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder --chown=app:app /app/.next/standalone ./
+COPY --from=builder --chown=app:app /app/.next/static ./.next/static
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
+
+USER app
 
 EXPOSE 3000
 ENV PORT=3000
