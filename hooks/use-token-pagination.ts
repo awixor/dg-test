@@ -1,53 +1,54 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { TokenData, PaginationMeta } from "@/lib/types";
+import { tokensQueryKey, fetchTokensPage, TokensPage } from "@/lib/tokens-query";
 
-export function useTokenPagination(
-  initialTokens: TokenData[],
-  initialPagination: PaginationMeta,
-) {
-  const [allTokens, setAllTokens] = useState<TokenData[]>(initialTokens);
-  const [pagination, setPagination] =
-    useState<PaginationMeta>(initialPagination);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
+export function useTokenPagination(initialLimit: number) {
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const loadMore = async () => {
-    if (!pagination.hasNextPage || isLoadingMore) return;
+  const query = useInfiniteQuery<TokensPage>({
+    queryKey: tokensQueryKey(searchQuery, initialLimit),
+    queryFn: ({ pageParam, signal }) =>
+      fetchTokensPage(pageParam as number, initialLimit, searchQuery, signal),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.hasNextPage ? lastPage.pagination.page + 1 : undefined,
+  });
 
-    // Abort any in-flight request (also serves as unmount guard —
-    // the signal's abort event prevents state updates on stale fetches)
-    abortRef.current?.abort();
-    const ctrl = new AbortController();
-    abortRef.current = ctrl;
-
-    setIsLoadingMore(true);
-    setLoadMoreError(null);
-    try {
-      const res = await fetch(
-        `/api/tokens?page=${pagination.page + 1}&limit=${pagination.limit}`,
-        { signal: ctrl.signal },
-      );
-      if (!res.ok) throw new Error("Failed to load more tokens");
-      const json = await res.json();
-
-      setAllTokens((prev) => {
-        const seen = new Set(prev.map((t) => t.id));
-        return [
-          ...prev,
-          ...json.data.filter((t: TokenData) => !seen.has(t.id)),
-        ];
-      });
-      setPagination(json.pagination);
-    } catch (err) {
-      if (err instanceof DOMException && err.name === "AbortError") return;
-      setLoadMoreError("Failed to load more tokens. Please try again.");
-    } finally {
-      if (!ctrl.signal.aborted) setIsLoadingMore(false);
+  const allTokens = useMemo<TokenData[]>(() => {
+    if (!query.data) return [];
+    const seen = new Set<number>();
+    const out: TokenData[] = [];
+    for (const page of query.data.pages) {
+      for (const token of page.data) {
+        if (!seen.has(token.id)) {
+          seen.add(token.id);
+          out.push(token);
+        }
+      }
     }
+    return out;
+  }, [query.data]);
+
+  const lastPage = query.data?.pages[query.data.pages.length - 1];
+  const pagination: PaginationMeta = lastPage?.pagination ?? {
+    page: 1,
+    limit: initialLimit,
+    total: 0,
+    totalPages: 0,
+    hasNextPage: false,
   };
 
-  return { allTokens, pagination, isLoadingMore, loadMoreError, loadMore };
+  return {
+    allTokens,
+    pagination,
+    isLoading: query.isFetching,
+    error: query.error,
+    loadMore: () => {
+      if (query.hasNextPage && !query.isFetchingNextPage) query.fetchNextPage();
+    },
+    search: (q: string) => setSearchQuery(q),
+  };
 }

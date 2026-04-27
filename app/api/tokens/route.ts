@@ -12,9 +12,10 @@ export async function GET(request: Request) {
         DEFAULT_LIMIT,
     ),
   );
+  const search = searchParams.get("search")?.trim() || undefined;
 
   try {
-    const { tokens, pagination } = await getActiveTokensWithCount(page, limit);
+    const { tokens, pagination } = await getActiveTokensWithCount(page, limit, search);
 
     return Response.json({
       data: tokens,

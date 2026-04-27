@@ -4,3 +4,4 @@ export { WarningIcon } from "./warning-icon";
 export { TokenIcon } from "./token-icon";
 export { CheckIcon } from "./check-icon";
 export { NetworkIcon } from "./network-icon";
+export { SearchIcon } from "./search-icon";

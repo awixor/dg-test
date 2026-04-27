@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { CloseIcon, NetworkIcon } from "./icons";
 import { ComingSoon } from "./coming-soon";
-import { TokenData, PaginationMeta } from "@/lib/types";
 import { TabBar, Tab } from "./deposit/tab-bar";
 import { TokenSelectDropdown } from "./deposit/token-select-dropdown";
 import { SelectDropdown } from "./deposit/select-dropdown";
@@ -13,20 +12,23 @@ import { useDepositModal, DropdownType } from "@/hooks/use-deposit-modal";
 import { useTokenPagination } from "@/hooks/use-token-pagination";
 
 export function DepositModalView({
-  tokens: initialTokens,
-  initialPagination,
+  initialLimit,
 }: {
-  tokens: TokenData[];
-  initialPagination: PaginationMeta;
+  initialLimit: number;
 }) {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Deposit);
 
-  const { allTokens, pagination, isLoadingMore, loadMoreError, loadMore } =
-    useTokenPagination(initialTokens, initialPagination);
+  const { allTokens, pagination, isLoading, error, loadMore, search } =
+    useTokenPagination(initialLimit);
+  const loadMoreError = error
+    ? "Failed to load more tokens. Please try again."
+    : null;
+
+  const [networkSearch, setNetworkSearch] = useState("");
 
   const {
     selectedToken,
-    selectedNetworkIdx,
+    selectedNetworkId,
     selectedTokenId,
     depositAddress,
     minDeposit,
@@ -56,13 +58,14 @@ export function DepositModalView({
             id="token-select-dropdown"
             tokens={allTokens}
             pagination={pagination}
-            isLoadingMore={isLoadingMore}
+            isLoading={isLoading}
             onLoadMore={loadMore}
             selectedTokenId={selectedTokenId}
             selectedToken={selectedToken}
             isOpen={activeDropdown === DropdownType.Token}
             onToggle={() => toggleDropdown(DropdownType.Token)}
             onSelect={selectToken}
+            onSearch={search}
             loadMoreError={loadMoreError}
           />
         </div>
@@ -79,23 +82,28 @@ export function DepositModalView({
               <NetworkIcon iconUrl={networkIconUrl} name={networkName} />
             }
             triggerLabel={networkName}
-            options={(selectedToken?.networks ?? []).map((entry, idx) => ({
-              id: entry.network.id,
-              label: entry.network.name,
-              icon: (
-                <NetworkIcon
-                  iconUrl={entry.network.iconUrl}
-                  name={entry.network.name}
-                />
-              ),
-              isSelected: idx === selectedNetworkIdx,
-            }))}
-            onSelect={(id) => {
-              const idx =
-                selectedToken?.networks.findIndex((e) => e.network.id === id) ??
-                0;
-              selectNetwork(idx);
-            }}
+            onSearch={setNetworkSearch}
+            searchPlaceholder="Search network…"
+            options={(selectedToken?.networks ?? [])
+              .filter((entry) =>
+                networkSearch
+                  ? entry.network.name
+                      .toLowerCase()
+                      .includes(networkSearch.toLowerCase())
+                  : true,
+              )
+              .map((entry) => ({
+                id: entry.network.id,
+                label: entry.network.name,
+                icon: (
+                  <NetworkIcon
+                    iconUrl={entry.network.iconUrl}
+                    name={entry.network.name}
+                  />
+                ),
+                isSelected: entry.network.id === selectedNetworkId,
+              }))}
+            onSelect={(id) => selectNetwork(id as number)}
           />
         </div>
 

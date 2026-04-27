@@ -1,9 +1,10 @@
 "use client";
 
-import { ChevronDown, CheckIcon } from "@/components/icons";
-import { ReactNode, useEffect, useState, useRef } from "react";
+import { ChevronDown, CheckIcon, SearchIcon } from "@/components/icons";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useClickOutside } from "@/hooks/use-click-outside";
+import { useDebouncedEffect } from "@/hooks/use-debounced-effect";
 
 interface SelectDropdownOption {
   id: string | number;
@@ -24,9 +25,11 @@ interface SelectDropdownProps {
   options: SelectDropdownOption[];
   onSelect: (id: string | number) => void;
   hasMore?: boolean;
-  isLoadingMore?: boolean;
+  isLoading?: boolean;
   onLoadMore?: () => void;
   loadMoreError?: string | null;
+  searchPlaceholder?: string;
+  onSearch?: (query: string) => void;
 }
 
 export function SelectDropdown({
@@ -39,23 +42,13 @@ export function SelectDropdown({
   options,
   onSelect,
   hasMore,
-  isLoadingMore,
+  isLoading,
   loadMoreError,
   onLoadMore,
+  searchPlaceholder = "Search…",
+  onSearch,
 }: SelectDropdownProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollEl, setScrollEl] = useState<HTMLDivElement | null>(null);
-  const { ref: sentinelRef, inView } = useInView({
-    root: scrollEl,
-    threshold: 0,
-    rootMargin: "0px 0px 40px 0px",
-  });
-
-  useEffect(() => {
-    if (!isOpen || !hasMore || isLoadingMore || loadMoreError) return;
-    if (inView) onLoadMore?.();
-  }, [inView, isOpen, hasMore, isLoadingMore, loadMoreError, onLoadMore]);
-
   useClickOutside(containerRef, onToggle, isOpen);
 
   return (
@@ -78,72 +71,144 @@ export function SelectDropdown({
       </button>
 
       {isOpen && (
-        <div
-          ref={setScrollEl}
-          className="absolute z-10 mt-1 w-full max-h-64 overflow-y-auto bg-modal-bg border border-modal-border rounded-[9px] shadow-xl scrollbar-modal-end"
+        <DropdownPanel
+          options={options}
+          onSelect={onSelect}
+          hasMore={hasMore}
+          isLoading={isLoading}
+          loadMoreError={loadMoreError}
+          onLoadMore={onLoadMore}
+          searchPlaceholder={searchPlaceholder}
+          onSearch={onSearch}
+        />
+      )}
+    </div>
+  );
+}
+
+interface DropdownPanelProps {
+  options: SelectDropdownOption[];
+  onSelect: (id: string | number) => void;
+  hasMore?: boolean;
+  isLoading?: boolean;
+  onLoadMore?: () => void;
+  loadMoreError?: string | null;
+  searchPlaceholder: string;
+  onSearch?: (query: string) => void;
+}
+
+function DropdownPanel({
+  options,
+  onSelect,
+  hasMore,
+  isLoading,
+  loadMoreError,
+  onLoadMore,
+  searchPlaceholder,
+  onSearch,
+}: DropdownPanelProps) {
+  const selectedRef = useRef<HTMLButtonElement>(null);
+  const [scrollEl, setScrollEl] = useState<HTMLDivElement | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { ref: sentinelRef } = useInView({
+    root: scrollEl,
+    threshold: 0,
+    rootMargin: "0px 0px 40px 0px",
+    onChange: (inView) => {
+      if (inView && hasMore && !isLoading && !loadMoreError) onLoadMore?.();
+    },
+  });
+
+  useEffect(() => {
+    selectedRef.current?.scrollIntoView({ block: "nearest" });
+    return () => onSearch?.("");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useDebouncedEffect(searchQuery, 300, (v) => onSearch?.(v));
+
+  return (
+    <div
+      ref={setScrollEl}
+      className="absolute z-10 mt-1 w-full max-h-64 overflow-y-auto bg-modal-bg border border-modal-border rounded-[9px] shadow-xl scrollbar-modal-end"
+    >
+      {onSearch && (
+        <div className="sticky top-0 bg-modal-bg px-3 py-2 border-b border-modal-border">
+          <div className="flex items-center gap-2 text-modal-muted">
+            <SearchIcon />
+            <input
+              autoFocus
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={searchPlaceholder}
+              className="flex-1 bg-transparent text-sm text-white placeholder:text-modal-muted outline-none"
+            />
+          </div>
+        </div>
+      )}
+      {isLoading && options.length === 0 && (
+        <div className="flex justify-center py-4">
+          <span
+            role="status"
+            aria-label="Loading"
+            className="w-4 h-4 rounded-full border-2 border-modal-muted border-t-transparent animate-spin"
+          />
+        </div>
+      )}
+      {!isLoading && options.length === 0 && (
+        <p className="text-center text-modal-muted text-sm py-4">No results</p>
+      )}
+      {options.map((option) => (
+        <button
+          key={option.id}
+          ref={option.isSelected ? selectedRef : undefined}
+          className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-modal-hover cursor-pointer transition-colors ${
+            option.isSelected ? "bg-modal-icon-bg" : ""
+          }`}
+          onClick={() => onSelect(option.id)}
         >
-          {options.map((option) => (
-            <button
-              key={option.id}
-              ref={
-                option.isSelected
-                  ? (element) => element?.scrollIntoView({ block: "nearest" })
-                  : undefined
-              }
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-modal-hover cursor-pointer transition-colors ${
-                option.isSelected ? "bg-modal-icon-bg" : ""
-              }`}
-              onClick={() => onSelect(option.id)}
-            >
-              {option.icon}
-              <span className="font-medium text-white text-sm flex-1">
-                {option.label}
-              </span>
-              {option.sublabel && (
-                <span className="text-modal-muted text-xs">
-                  {option.sublabel}
-                </span>
-              )}
-              {option.badge}
-              {option.isSelected && (
-                <span className="text-white shrink-0">
-                  <CheckIcon />
-                </span>
-              )}
-            </button>
-          ))}
-          {hasMore && !loadMoreError && (
-            <div
-              ref={sentinelRef}
-              className="w-full flex items-center justify-center px-3 py-2 h-8"
-              aria-live="polite"
-              aria-busy={isLoadingMore}
-            >
-              {isLoadingMore && (
-                <span
-                  role="status"
-                  aria-label="Loading more"
-                  className="w-4 h-4 rounded-full border-2 border-modal-muted border-t-transparent animate-spin"
-                />
-              )}
-            </div>
+          {option.icon}
+          <span className="font-medium text-white text-sm flex-1">
+            {option.label}
+          </span>
+          {option.sublabel && (
+            <span className="text-modal-muted text-xs">{option.sublabel}</span>
           )}
-          {loadMoreError && (
-            <div className="flex flex-col items-center gap-1 py-2">
-              <p className="text-xs text-red-400 text-center">
-                {loadMoreError}
-              </p>
-              <button
-                className="text-xs text-modal-muted hover:text-white cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onLoadMore?.();
-                }}
-              >
-                Retry
-              </button>
-            </div>
+          {option.badge}
+          {option.isSelected && (
+            <span className="text-white shrink-0">
+              <CheckIcon />
+            </span>
           )}
+        </button>
+      ))}
+      {hasMore && !loadMoreError && options.length > 0 && (
+        <div
+          ref={sentinelRef}
+          className="w-full flex items-center justify-center px-3 py-2 h-8"
+        >
+          {isLoading && (
+            <span
+              role="status"
+              aria-label="Loading more"
+              className="w-4 h-4 rounded-full border-2 border-modal-muted border-t-transparent animate-spin"
+            />
+          )}
+        </div>
+      )}
+      {loadMoreError && (
+        <div className="flex flex-col items-center gap-1 py-2">
+          <p className="text-xs text-red-400 text-center">{loadMoreError}</p>
+          <button
+            className="text-xs text-modal-muted hover:text-white cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              onLoadMore?.();
+            }}
+          >
+            Retry
+          </button>
         </div>
       )}
     </div>

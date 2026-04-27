@@ -13,15 +13,25 @@ export function useDepositModal(tokens: TokenData[]) {
   const [selectedTokenId, setSelectedTokenId] = useState<number>(
     tokens[0]?.id ?? 0,
   );
-  const [selectedNetworkIdx, setSelectedNetworkIdx] = useState(0);
+  const [tokenSnapshot, setTokenSnapshot] = useState<TokenData | null>(
+    tokens[0] ?? null,
+  );
+  const [selectedNetworkId, setSelectedNetworkId] = useState<number | null>(
+    tokens[0]?.networks[0]?.network.id ?? null,
+  );
   const [copied, setCopied] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<DropdownType>(
     DropdownType.None,
   );
 
   const selectedToken =
-    tokens.find((token) => token.id === selectedTokenId) ?? tokens[0];
-  const selectedNetworkEntry = selectedToken?.networks[selectedNetworkIdx];
+    tokens.find((token) => token.id === selectedTokenId) ??
+    tokenSnapshot ??
+    tokens[0];
+  const selectedNetworkEntry =
+    selectedToken?.networks.find(
+      (n) => n.network.id === selectedNetworkId,
+    ) ?? selectedToken?.networks[0];
   const depositAddress = selectedNetworkEntry?.depositAddress ?? "";
   const minDeposit = selectedNetworkEntry?.minDeposit ?? "0";
   const networkName = selectedNetworkEntry?.network.name ?? "";
@@ -32,13 +42,15 @@ export function useDepositModal(tokens: TokenData[]) {
   }
 
   function selectToken(id: number) {
+    const token = tokens.find((t) => t.id === id);
+    if (token) setTokenSnapshot(token);
     setSelectedTokenId(id);
-    setSelectedNetworkIdx(0);
+    setSelectedNetworkId(token?.networks[0]?.network.id ?? null);
     closeAllMenus();
   }
 
-  function selectNetwork(idx: number) {
-    setSelectedNetworkIdx(idx);
+  function selectNetwork(id: number) {
+    setSelectedNetworkId(id);
     closeAllMenus();
   }
 
@@ -59,7 +71,7 @@ export function useDepositModal(tokens: TokenData[]) {
 
   return {
     selectedToken,
-    selectedNetworkIdx,
+    selectedNetworkId,
     selectedTokenId,
     depositAddress,
     minDeposit,

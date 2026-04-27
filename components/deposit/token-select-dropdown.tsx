@@ -8,13 +8,14 @@ interface TokenSelectDropdownProps {
   id?: string;
   tokens: TokenData[];
   pagination: PaginationMeta;
-  isLoadingMore: boolean;
+  isLoading: boolean;
   onLoadMore: () => void;
   selectedTokenId: number | null;
   selectedToken: TokenData | null;
   isOpen: boolean;
   onToggle: () => void;
   onSelect: (id: number) => void;
+  onSearch: (query: string) => void;
   loadMoreError?: string | null;
 }
 
@@ -22,13 +23,14 @@ export function TokenSelectDropdown({
   id,
   tokens,
   pagination,
-  isLoadingMore,
+  isLoading,
   onLoadMore,
   selectedTokenId,
   selectedToken,
   isOpen,
   onToggle,
   onSelect,
+  onSearch,
   loadMoreError,
 }: TokenSelectDropdownProps) {
   return (
@@ -36,6 +38,8 @@ export function TokenSelectDropdown({
       id={id}
       isOpen={isOpen}
       onToggle={onToggle}
+      onSearch={onSearch}
+      searchPlaceholder="Search token…"
       triggerIcon={
         <TokenIcon
           iconUrl={selectedToken?.iconUrl ?? null}
@@ -64,7 +68,7 @@ export function TokenSelectDropdown({
       }))}
       onSelect={(id) => onSelect(id as number)}
       hasMore={pagination.hasNextPage}
-      isLoadingMore={isLoadingMore}
+      isLoading={isLoading}
       onLoadMore={onLoadMore}
       loadMoreError={loadMoreError}
     />
