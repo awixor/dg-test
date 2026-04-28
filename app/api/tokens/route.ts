@@ -1,4 +1,8 @@
-import { getActiveTokensWithCount, DEFAULT_LIMIT, MAX_LIMIT } from "@/lib/tokens.server";
+import {
+  getActiveTokensWithCount,
+  DEFAULT_LIMIT,
+  MAX_LIMIT,
+} from "@/lib/tokens-server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -15,7 +19,11 @@ export async function GET(request: Request) {
   const search = searchParams.get("search")?.trim() || undefined;
 
   try {
-    const { tokens, pagination } = await getActiveTokensWithCount(page, limit, search);
+    const { tokens, pagination } = await getActiveTokensWithCount(
+      page,
+      limit,
+      search,
+    );
 
     return Response.json({
       data: tokens,

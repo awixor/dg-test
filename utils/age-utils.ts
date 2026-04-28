@@ -8,6 +8,7 @@ export const UserUtils = {
   /**
    * Returns true if the oldest user is at least twice as old as the youngest user.
    */
+  // O(n) Time and O(1) Space
   AtLeastTwice: (users: User[]): boolean => {
     if (users.length < 2) return false;
     let min = users[0].age;
@@ -23,6 +24,7 @@ export const UserUtils = {
   /**
    * Returns true if there exist two users whose ages are exactly twice each other.
    */
+  // O(n) Time and O(n) Space
   ExactlyTwice: (users: User[]): boolean => {
     const seenAges = new Set<number>();
 
@@ -37,6 +39,7 @@ export const UserUtils = {
   /**
    * Returns true if there exist two users whose ages are exactly twice each other, with the constraint that ages are between 18 and 80.
    */
+  // O(n) Time and O(1) Space
   ConstrainedExactlyTwice: (users: User[]): boolean => {
     const seenAges = new Uint8Array(81);
 
