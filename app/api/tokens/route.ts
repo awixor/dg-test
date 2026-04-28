@@ -1,4 +1,4 @@
-import { getActiveTokensWithCount, DEFAULT_LIMIT, MAX_LIMIT } from "@/data/tokens";
+import { getActiveTokensWithCount, DEFAULT_LIMIT, MAX_LIMIT } from "@/lib/tokens.server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

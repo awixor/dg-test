@@ -1,4 +1,4 @@
-export type NetworkEntry = {
+type NetworkEntry = {
   depositAddress: string;
   minDeposit: string;
   network: {

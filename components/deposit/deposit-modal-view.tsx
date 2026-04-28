@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { CloseIcon, NetworkIcon } from "./icons";
-import { ComingSoon } from "./coming-soon";
-import { TabBar, Tab } from "./deposit/tab-bar";
-import { TokenSelectDropdown } from "./deposit/token-select-dropdown";
-import { SelectDropdown } from "./deposit/select-dropdown";
-import { DepositAddressSection } from "./deposit/deposit-address-section";
-import { BuyCryptoSection } from "./deposit/buy-crypto-section";
+import { CloseIcon, NetworkIcon } from "../icons";
+import { ComingSoon } from "../coming-soon";
+import { TabBar, Tab } from "./tab-bar";
+import { TokenSelectDropdown } from "./token-select-dropdown";
+import { SelectDropdown } from "./select-dropdown";
+import { DepositAddressSection } from "./deposit-address-section";
+import { BuyCryptoSection } from "./buy-crypto-section";
 import { useDepositModal, DropdownType } from "@/hooks/use-deposit-modal";
 import { useTokenPagination } from "@/hooks/use-token-pagination";
 

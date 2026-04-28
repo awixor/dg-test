@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { DepositModal } from "@/components/deposit-modal";
-import { DepositModalSkeleton } from "@/components/deposit-modal-skeleton";
+import { DepositModal } from "@/components/deposit/deposit-modal";
+import { DepositModalSkeleton } from "@/components/deposit/deposit-modal-skeleton";
 
 export default async function Home() {
   return (

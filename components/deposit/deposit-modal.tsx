@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { connection } from "next/server";
 import { DepositModalView } from "./deposit-modal-view";
-import { getActiveTokensWithCount, DEFAULT_LIMIT } from "@/data/tokens";
+import { getActiveTokensWithCount, DEFAULT_LIMIT } from "@/lib/tokens.server";
 import { getQueryClient } from "@/lib/get-query-client";
 import { tokensQueryKey } from "@/lib/tokens-query";
 
