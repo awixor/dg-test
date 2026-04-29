@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { TokenData, PaginationMeta } from "@/lib/types";
 import {
   tokensQueryKey,
@@ -23,10 +23,11 @@ export function useTokenPagination(initialLimit: number) {
         : undefined,
   });
 
-  const allTokens = useMemo<TokenData[]>(() => {
+  const allTokens: TokenData[] = (() => {
     if (!query.data) return [];
     const seen = new Set<number>();
     const out: TokenData[] = [];
+
     for (const page of query.data.pages) {
       for (const token of page.data) {
         if (!seen.has(token.id)) {
@@ -36,7 +37,7 @@ export function useTokenPagination(initialLimit: number) {
       }
     }
     return out;
-  }, [query.data]);
+  })();
 
   const lastPage = query.data?.pages[query.data.pages.length - 1];
   const pagination: PaginationMeta = lastPage?.pagination ?? {
