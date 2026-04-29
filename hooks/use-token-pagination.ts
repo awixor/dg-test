@@ -3,7 +3,11 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { TokenData, PaginationMeta } from "@/lib/types";
-import { tokensQueryKey, fetchTokensPage, TokensPage } from "@/lib/tokens-query";
+import {
+  tokensQueryKey,
+  fetchTokensPage,
+  TokensPage,
+} from "@/lib/tokens-query";
 
 export function useTokenPagination(initialLimit: number) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,7 +18,9 @@ export function useTokenPagination(initialLimit: number) {
       fetchTokensPage(pageParam as number, initialLimit, searchQuery, signal),
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
-      lastPage.pagination.hasNextPage ? lastPage.pagination.page + 1 : undefined,
+      lastPage.pagination.hasNextPage
+        ? lastPage.pagination.page + 1
+        : undefined,
   });
 
   const allTokens = useMemo<TokenData[]>(() => {
@@ -35,9 +41,6 @@ export function useTokenPagination(initialLimit: number) {
   const lastPage = query.data?.pages[query.data.pages.length - 1];
   const pagination: PaginationMeta = lastPage?.pagination ?? {
     page: 1,
-    limit: initialLimit,
-    total: 0,
-    totalPages: 0,
     hasNextPage: false,
   };
 

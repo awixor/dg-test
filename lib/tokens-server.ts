@@ -7,20 +7,6 @@ import { PaginationMeta } from "@/lib/types";
 export const DEFAULT_LIMIT = 5;
 export const MAX_LIMIT = 50;
 
-export function buildPaginationMeta(
-  page: number,
-  limit: number,
-  total: number,
-): PaginationMeta {
-  return {
-    page,
-    limit,
-    total,
-    totalPages: Math.ceil(total / limit),
-    hasNextPage: page * limit < total,
-  };
-}
-
 const tokenSelect = {
   id: true,
   symbol: true,
@@ -81,7 +67,7 @@ async function queryTokensPaged(page: number, limit: number) {
 
   return {
     tokens: serializeTokens(rows),
-    pagination: buildPaginationMeta(page, limit, total),
+    pagination: { page, hasNextPage: page * limit < total } satisfies PaginationMeta,
   };
 }
 
@@ -104,18 +90,10 @@ async function queryTokensSearch(page: number, limit: number, search: string) {
 
   const hasNextPage = rows.length > limit;
   const page_rows = hasNextPage ? rows.slice(0, limit) : rows;
-  const approxTotal =
-    (page - 1) * limit + page_rows.length + (hasNextPage ? 1 : 0);
 
   return {
     tokens: serializeTokens(page_rows),
-    pagination: {
-      page,
-      limit,
-      total: approxTotal,
-      totalPages: hasNextPage ? page + 1 : page,
-      hasNextPage,
-    } satisfies PaginationMeta,
+    pagination: { page, hasNextPage } satisfies PaginationMeta,
   };
 }
 
