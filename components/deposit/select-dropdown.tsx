@@ -7,7 +7,7 @@ import { useClickOutside } from "@/hooks/use-click-outside";
 import { useDebouncedEffect } from "@/hooks/use-debounced-effect";
 
 interface SelectDropdownOption {
-  id: string | number;
+  id: number;
   label: ReactNode;
   sublabel?: ReactNode;
   icon?: ReactNode;
@@ -23,7 +23,7 @@ interface SelectDropdownProps {
   isOpen: boolean;
   onToggle: () => void;
   options: SelectDropdownOption[];
-  onSelect: (id: string | number) => void;
+  onSelect: (id: number) => void;
   hasMore?: boolean;
   isLoading?: boolean;
   onLoadMore?: () => void;
@@ -88,7 +88,7 @@ export function SelectDropdown({
 
 interface DropdownPanelProps {
   options: SelectDropdownOption[];
-  onSelect: (id: string | number) => void;
+  onSelect: (id: number) => void;
   hasMore?: boolean;
   isLoading?: boolean;
   onLoadMore?: () => void;

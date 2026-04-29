@@ -3,6 +3,7 @@
 import { TokenIcon } from "@/components/icons";
 import { TokenData, PaginationMeta } from "@/lib/types";
 import { SelectDropdown } from "./select-dropdown";
+import { Badge } from "../badge";
 
 interface TokenSelectDropdownProps {
   id?: string;
@@ -49,9 +50,7 @@ export function TokenSelectDropdown({
       triggerLabel={selectedToken?.symbol}
       triggerBadge={
         selectedToken?.isUnderMaintenance ? (
-          <span className="text-[10px] font-bold text-warning-text bg-warning-gold rounded px-1.5 py-0.5">
-            Maintenance
-          </span>
+          <Badge label="Maintenance" />
         ) : undefined
       }
       options={tokens.map((token) => ({
@@ -60,9 +59,7 @@ export function TokenSelectDropdown({
         sublabel: token.name,
         icon: <TokenIcon iconUrl={token.iconUrl} symbol={token.symbol} />,
         badge: token.isUnderMaintenance ? (
-          <span className="text-[10px] font-bold text-warning-text bg-warning-gold rounded px-1.5 py-0.5">
-            Maintenance
-          </span>
+          <Badge label="Maintenance" />
         ) : undefined,
         isSelected: token.id === selectedTokenId,
       }))}

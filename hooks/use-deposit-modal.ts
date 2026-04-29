@@ -29,9 +29,8 @@ export function useDepositModal(tokens: TokenData[]) {
     tokenSnapshot ??
     tokens[0];
   const selectedNetworkEntry =
-    selectedToken?.networks.find(
-      (n) => n.network.id === selectedNetworkId,
-    ) ?? selectedToken?.networks[0];
+    selectedToken?.networks.find((n) => n.network.id === selectedNetworkId) ??
+    selectedToken?.networks[0];
   const depositAddress = selectedNetworkEntry?.depositAddress ?? "";
   const minDeposit = selectedNetworkEntry?.minDeposit ?? "0";
   const networkName = selectedNetworkEntry?.network.name ?? "";
@@ -79,7 +78,6 @@ export function useDepositModal(tokens: TokenData[]) {
     networkIconUrl,
     copied,
     activeDropdown,
-    closeAllMenus,
     selectToken,
     selectNetwork,
     toggleDropdown,

@@ -11,11 +11,7 @@ import { BuyCryptoSection } from "./buy-crypto-section";
 import { useDepositModal, DropdownType } from "@/hooks/use-deposit-modal";
 import { useTokenPagination } from "@/hooks/use-token-pagination";
 
-export function DepositModalView({
-  initialLimit,
-}: {
-  initialLimit: number;
-}) {
+export function DepositModalView({ initialLimit }: { initialLimit: number }) {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.Deposit);
 
   const { allTokens, pagination, isLoading, error, loadMore, search } =
@@ -36,7 +32,6 @@ export function DepositModalView({
     networkIconUrl,
     copied,
     activeDropdown,
-    closeAllMenus,
     selectToken,
     selectNetwork,
     toggleDropdown,
@@ -103,7 +98,7 @@ export function DepositModalView({
                 ),
                 isSelected: entry.network.id === selectedNetworkId,
               }))}
-            onSelect={(id) => selectNetwork(id as number)}
+            onSelect={selectNetwork}
           />
         </div>
 
@@ -124,14 +119,8 @@ export function DepositModalView({
   };
 
   return (
-    <div
-      className="min-h-screen bg-black flex items-center justify-center p-4"
-      onClick={closeAllMenus}
-    >
-      <div
-        className="w-full max-w-95.5 max-h-[90vh] bg-modal-bg border border-modal-border rounded-[9px] overflow-hidden flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="w-full max-w-95.5 max-h-[90vh] bg-modal-bg border border-modal-border rounded-[9px] overflow-hidden flex flex-col">
         <div className="flex flex-col gap-4 px-3 pt-3">
           <div className="flex justify-end">
             <button
